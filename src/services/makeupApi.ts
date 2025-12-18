@@ -1,21 +1,13 @@
-/* import axios from "axios";
-import type { Movie } from "../types/movie";
+import type { MakeupProduct } from "../types/makeup";
 
-const API_TOKEN = import.meta.env.VITE_API_TOKEN;
+const BASE_URL = "https://makeup-api.herokuapp.com/api/v1/products.json";
 
-axios.defaults.baseURL = "https://api.themoviedb.org/3";
+export async function fetchProducts(): Promise<MakeupProduct[]> {
+  const response = await fetch(BASE_URL);
 
-interface FetchMoviesResp {
-  results: Movie[];
+  if (!response.ok) {
+    throw new Error("Failed to fetch products");
+  }
+
+  return response.json();
 }
-
-export const fetchMovies = async (topic: string): Promise<Movie[]> => {
-  const response = await axios.get<FetchMoviesResp>(`/search/movie`, {
-    params: { query: topic },
-    headers: {
-      Authorization: `Bearer ${API_TOKEN}`,
-    },
-  });
-  return response.data.results;
-};
- */
