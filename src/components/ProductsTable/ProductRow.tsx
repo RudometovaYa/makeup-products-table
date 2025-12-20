@@ -1,4 +1,4 @@
-import ProductColors from "../ ProductsTable/ProductColors";
+import ProductColors from "./ProductColors";
 import type { MakeupProduct } from "../../types/makeup";
 
 type Props = {
