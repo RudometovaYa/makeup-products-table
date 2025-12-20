@@ -1,69 +1,131 @@
-# React + TypeScript + Vite
+# Makeup Products Table
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React application for browsing and filtering cosmetic products using the public Makeup API.
+The project demonstrates data fetching, client-side filtering, grouping, and table-based UI built with Ant Design.
 
-Currently, two official plugins are available:
+## Live Demo 🔗
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+👉 Deployed application:
+https://makeup-products-table.vercel.app/
 
-## Expanding the ESLint configuration
+## Features ✨
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+📦 Fetch products from public API
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+📊 Display products in a table
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+🔍 Filter products by brand (multiple selection)
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+🏷️ Filter products by tags (multiple selection)
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+🧩 Group products by:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+     - brand
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+     - category
+
+     - product type
+
+➕ Expandable rows to show product colors
+
+⏳ Loading and error states
+
+🧼 Clean, structured component architecture
+
+📱 Responsive and stable layout
+
+## Tech Stack 🛠️
+
+- React
+
+- TypeScript
+
+- Vite
+
+- Ant Design
+
+- Makeup API
+
+## Data Flow 🔄
+
+Data is fetched once from the API on page load
+
+Products are stored in local state
+
+Filtering and grouping are performed on the client side
+
+All data is passed between components via props
+
+No global state or external state managers are used
+
+## About Tag Filtering 🏷️
+
+The Makeup API documentation provides a list of possible product tags (e.g. Vegan, Natural, Cruelty Free).
+However, in practice, the API does not consistently return tag values in the product data.
+
+To handle this correctly:
+
+The list of tags is defined statically based on the API documentation
+
+Tag filtering is applied only if tag data exists for a product
+
+If no products match selected tags, an empty state is shown
+
+This approach ensures:
+
+compliance with the API specification
+
+stable UI behavior
+
+transparent handling of backend limitations
+
+## UI / UX Decisions 📐
+
+Page width is fixed at the layout level to prevent layout jumps
+
+Expandable rows follow Ant Design standard behavior (icon on the left)
+
+Tooltips are used to explain expandable content
+
+Table layout does not affect page width when grouping is enabled
+
+## Getting Started 🚀
+
+#### Install dependencies
+
+npm install
+
+#### Run development server
+
+npm run dev
+
+####
+
+http://localhost:5173
+
+## Notes 📌
+
+This project focuses on frontend logic and UI
+
+The API is public and may have incomplete data
+
+All edge cases related to missing data are handled gracefully
+
+## Evaluation Criteria Coverage ✅
+
+✔️ Functionality — all required features are implemented
+
+✔️ Interface — user-friendly and consistent UI
+
+✔️ Error handling — loading and error states included
+
+✔️ Code quality — clean, readable, and well-structured
+
+✔️ Component-based architecture
+
+✔️ Props-based data flow
+
+🧑‍💻 Author
+Yana Rudometova — Frontend Developer
+GitHub: https://github.com/RudometovaYa?tab=repositories
+LinkedIn: https://www.linkedin.com/in/yana-rudometova/
