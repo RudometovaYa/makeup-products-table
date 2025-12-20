@@ -8,71 +8,68 @@ import { groupProducts } from "../utils/groupProducts";
 
 import type { MakeupProduct, TableRow } from "../types/makeup";
 
-type GroupBy = "brand" | "category" | "type";
+export type GroupBy = "none" | "brand" | "category" | "type";
 
 export default function ProductsPage() {
   const [allProducts, setAllProducts] = useState<MakeupProduct[]>([]);
-  const [visibleProducts, setVisibleProducts] = useState<TableRow[]>([]);
-
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | undefined>(undefined);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
 
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [groupBy, setGroupBy] = useState<GroupBy | undefined>(undefined);
+  const [groupBy, setGroupBy] = useState<GroupBy>("none");
 
+  // ===== Fetch products =====
   useEffect(() => {
-    async function loadProducts() {
+    const loadProducts = async () => {
       try {
         setLoading(true);
-        setError(undefined);
+        setError("");
 
         const data = await fetchProducts();
         setAllProducts(data);
-      } catch (err) {
-        setError((err as Error).message);
+      } catch (e) {
+        setError((e as Error).message);
       } finally {
         setLoading(false);
       }
-    }
+    };
 
     loadProducts();
   }, []);
 
-  useEffect(() => {
-    let result: MakeupProduct[] = [...allProducts];
+  // ===== Filtering =====
+  const filteredProducts: MakeupProduct[] = allProducts
+    .filter((product) =>
+      selectedBrands.length > 0 ? selectedBrands.includes(product.brand) : true
+    )
+    .filter((product) =>
+      selectedTags.length > 0
+        ? product.product_tags.some((tag) => selectedTags.includes(tag))
+        : true
+    );
 
-    if (selectedBrands.length > 0) {
-      result = result.filter((product) =>
-        selectedBrands.includes(product.brand)
-      );
-    }
+  // ===== Grouping =====
+  const tableData: TableRow[] =
+    groupBy === "none"
+      ? filteredProducts
+      : groupProducts(filteredProducts, groupBy);
 
-    if (selectedTags.length > 0) {
-      result = result.filter((product) =>
-        product.product_tags?.some((tag) => selectedTags.includes(tag))
-      );
-    }
+  // ===== Options for filters =====
+  const brands: string[] = Array.from(new Set(allProducts.map((p) => p.brand)));
 
-    if (groupBy) {
-      setVisibleProducts(groupProducts(result, groupBy));
-    } else {
-      setVisibleProducts(result);
-    }
-  }, [allProducts, selectedBrands, selectedTags, groupBy]);
+  const tags: string[] = Array.from(
+    new Set(allProducts.flatMap((p) => p.product_tags).filter((tag) => tag))
+  );
 
-  if (error) {
-    return <Alert type="error" message={error} />;
-  }
-
+  // ===== UI states =====
   if (loading) {
     return <Spin />;
   }
 
-  const brands = Array.from(new Set(allProducts.map((p) => p.brand)));
-  const tags = Array.from(
-    new Set(allProducts.flatMap((p) => p.product_tags ?? []))
-  );
+  if (error) {
+    return <Alert type="error" showIcon description={error} />;
+  }
 
   return (
     <Space orientation="vertical" size="large" style={{ width: "100%" }}>
@@ -87,7 +84,7 @@ export default function ProductsPage() {
         onGroupChange={setGroupBy}
       />
 
-      <ProductsTable products={visibleProducts} loading={loading} />
+      <ProductsTable products={tableData} loading={loading} />
     </Space>
   );
 }

@@ -27,6 +27,10 @@ export default function FiltersControls({
   onTagsChange,
   onGroupChange,
 }: Props) {
+  const handleGroupToggle = (value: Exclude<GroupBy, "none">) => {
+    onGroupChange(groupBy === value ? "none" : value);
+  };
+
   return (
     <Space orientation="vertical" size="large" style={{ width: "100%" }}>
       <Title level={4}>Filters</Title>
@@ -35,31 +39,19 @@ export default function FiltersControls({
         <Text>Group by type</Text>
         <Switch
           checked={groupBy === "type"}
-          onChange={(checked) =>
-            onGroupChange(
-              checked ? "type" : groupBy === "type" ? "none" : groupBy
-            )
-          }
+          onChange={() => handleGroupToggle("type")}
         />
 
         <Text>Group by brand</Text>
         <Switch
           checked={groupBy === "brand"}
-          onChange={(checked) =>
-            onGroupChange(
-              checked ? "brand" : groupBy === "brand" ? "none" : groupBy
-            )
-          }
+          onChange={() => handleGroupToggle("brand")}
         />
 
         <Text>Group by category</Text>
         <Switch
           checked={groupBy === "category"}
-          onChange={(checked) =>
-            onGroupChange(
-              checked ? "category" : groupBy === "category" ? "none" : groupBy
-            )
-          }
+          onChange={() => handleGroupToggle("category")}
         />
       </Space>
 
@@ -68,11 +60,11 @@ export default function FiltersControls({
         allowClear
         placeholder="Filter by brands"
         style={{ width: 320 }}
+        value={selectedBrands}
         options={brands.map((brand) => ({
           label: brand,
           value: brand,
         }))}
-        value={selectedBrands}
         onChange={onBrandsChange}
       />
 
@@ -81,11 +73,11 @@ export default function FiltersControls({
         allowClear
         placeholder="Filter by tags"
         style={{ width: 320 }}
+        value={selectedTags}
         options={tags.map((tag) => ({
           label: tag,
           value: tag,
         }))}
-        value={selectedTags}
         onChange={onTagsChange}
       />
     </Space>

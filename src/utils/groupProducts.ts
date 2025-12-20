@@ -1,28 +1,38 @@
-import type { MakeupProduct } from "../types/makeup";
+import type { MakeupProduct, GroupRow } from "../types/makeup";
 
 export function groupProducts(
   products: MakeupProduct[],
   groupBy: "brand" | "category" | "type"
-) {
+): GroupRow[] {
   const map = new Map<string, MakeupProduct[]>();
 
-  products.forEach((product) => {
-    let key = "";
+  for (const product of products) {
+    let key: string;
 
-    if (groupBy === "brand") key = product.brand;
-    if (groupBy === "category") key = product.category ?? "Other";
-    if (groupBy === "type") key = product.product_type;
-
-    if (!map.has(key)) {
-      map.set(key, []);
+    switch (groupBy) {
+      case "brand":
+        key = product.brand;
+        break;
+      case "category":
+        key = product.category;
+        break;
+      case "type":
+        key = product.product_type;
+        break;
     }
 
-    map.get(key)!.push(product);
-  });
+    const group = map.get(key);
+    if (group) {
+      group.push(product);
+    } else {
+      map.set(key, [product]);
+    }
+  }
 
   return Array.from(map.entries()).map(([key, items]) => ({
     key,
-    name: key,
+    title: key,
+    isGroup: true,
     children: items,
   }));
 }

@@ -17,7 +17,8 @@ export type MakeupProductColor = {
 
 export type GroupRow = {
   key: string;
-  name: string;
+  title: string;
+  isGroup: true;
   children: MakeupProduct[];
 };
 

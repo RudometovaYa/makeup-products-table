@@ -1,10 +1,16 @@
-import { Image, Table, Tag } from "antd";
+import { Image, Table, Tag, Typography } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import type { MakeupProduct, TableRow } from "../../types/makeup";
+import type { MakeupProduct, TableRow, GroupRow } from "../../types/makeup";
 import ProductsRow from "./ProductRow";
 
+const { Text } = Typography;
+
+function isGroup(row: TableRow): row is GroupRow {
+  return "isGroup" in row;
+}
+
 function isProduct(row: TableRow): row is MakeupProduct {
-  return "product_colors" in row;
+  return !("isGroup" in row);
 }
 
 type Props = {
@@ -14,8 +20,6 @@ type Props = {
 
 export default function ProductsTable({ products, loading }: Props) {
   const columns: ColumnsType<TableRow> = [
-    Table.EXPAND_COLUMN,
-
     {
       title: "Image",
       key: "image",
@@ -33,13 +37,12 @@ export default function ProductsTable({ products, loading }: Props) {
       title: "Name",
       key: "name",
       render: (_, record) =>
-        isProduct(record) ? record.name : <strong>{record.name}</strong>,
+        isGroup(record) ? <Text strong>{record.title}</Text> : record.name,
     },
     {
       title: "Category",
       key: "category",
-      render: (_, record) =>
-        isProduct(record) ? record.category ?? "—" : undefined,
+      render: (_, record) => (isProduct(record) ? record.category : undefined),
     },
     {
       title: "Brand",
@@ -64,15 +67,17 @@ export default function ProductsTable({ products, loading }: Props) {
 
   return (
     <Table<TableRow>
-      rowKey={(record) => (isProduct(record) ? record.id : record.key)}
+      rowKey={(record) => (isGroup(record) ? record.key : record.id)}
       loading={loading}
       columns={columns}
       dataSource={products}
       expandable={{
+        rowExpandable: (record) =>
+          isGroup(record) ||
+          (isProduct(record) && record.product_colors.length > 0),
+
         expandedRowRender: (record) =>
           isProduct(record) ? <ProductsRow product={record} /> : undefined,
-        rowExpandable: (record) =>
-          isProduct(record) && record.product_colors.length > 0,
       }}
       pagination={{ pageSize: 10 }}
     />
