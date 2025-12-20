@@ -6,6 +6,9 @@ import ProductsTable from "../components/ProductsTable/ProductsTable";
 import FiltersControls from "../components/FiltersControls/FiltersControls";
 
 import type { MakeupProduct } from "../types/makeup";
+import { TAG_OPTIONS } from "../constants/tags";
+
+import { Layout } from "antd";
 
 const { Text } = Typography;
 
@@ -43,7 +46,7 @@ export default function ProductsPage() {
     )
     .filter((p) =>
       selectedTags.length > 0
-        ? p.product_tags.some((tag) => selectedTags.includes(tag))
+        ? p.product_tags?.some((tag) => selectedTags.includes(tag)) ?? false
         : true
     );
 
@@ -63,50 +66,61 @@ export default function ProductsPage() {
   const brands = Array.from(new Set(allProducts.map((p) => p.brand))).filter(
     (brand): brand is string => Boolean(brand)
   );
-  const tags = Array.from(
-    new Set(allProducts.flatMap((p) => p.product_tags))
-  ).filter((tag): tag is string => Boolean(tag));
+  const tags = TAG_OPTIONS;
 
   if (loading) return <Spin />;
   if (error) return <Alert type="error" description={error} />;
 
+  const { Content } = Layout;
+
   return (
-    <Space orientation="vertical" size="large" style={{ width: "100%" }}>
-      <FiltersControls
-        brands={brands}
-        tags={tags}
-        selectedBrands={selectedBrands}
-        selectedTags={selectedTags}
-        groupBy={groupBy}
-        onBrandsChange={setSelectedBrands}
-        onTagsChange={setSelectedTags}
-        onGroupChange={setGroupBy}
-      />
+    <Layout>
+      <Content
+        style={{
+          maxWidth: 1200,
+          width: "100%",
+          margin: "0 auto",
+          padding: 24,
+        }}
+      >
+        <Space orientation="vertical" size="large" style={{ width: "100%" }}>
+          <FiltersControls
+            brands={brands}
+            tags={tags}
+            selectedBrands={selectedBrands}
+            selectedTags={selectedTags}
+            groupBy={groupBy}
+            onBrandsChange={setSelectedBrands}
+            onTagsChange={setSelectedTags}
+            onGroupChange={setGroupBy}
+          />
 
-      {groupBy === "none" && (
-        <ProductsTable products={filteredProducts} loading={loading} />
-      )}
+          {groupBy === "none" && (
+            <ProductsTable products={filteredProducts} loading={loading} />
+          )}
 
-      {groupBy !== "none" && (
-        <Collapse
-          accordion
-          items={groupValues.map((value) => {
-            const groupProducts = filteredProducts.filter((p) => {
-              if (groupBy === "brand") return p.brand === value;
-              if (groupBy === "category") return p.category === value;
-              return p.product_type === value;
-            });
+          {groupBy !== "none" && (
+            <Collapse
+              accordion
+              items={groupValues.map((value) => {
+                const groupProducts = filteredProducts.filter((p) => {
+                  if (groupBy === "brand") return p.brand === value;
+                  if (groupBy === "category") return p.category === value;
+                  return p.product_type === value;
+                });
 
-            return {
-              key: value,
-              label: <Text strong>{value}</Text>,
-              children: (
-                <ProductsTable products={groupProducts} loading={loading} />
-              ),
-            };
-          })}
-        />
-      )}
-    </Space>
+                return {
+                  key: value,
+                  label: <Text strong>{value}</Text>,
+                  children: (
+                    <ProductsTable products={groupProducts} loading={loading} />
+                  ),
+                };
+              })}
+            />
+          )}
+        </Space>
+      </Content>
+    </Layout>
   );
 }

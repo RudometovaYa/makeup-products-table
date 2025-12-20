@@ -1,4 +1,4 @@
-import { Select, Switch, Space, Typography } from "antd";
+import { Select, Switch, Space, Typography, Tooltip } from "antd";
 
 type GroupBy = "brand" | "category" | "type" | "none";
 
@@ -67,19 +67,20 @@ export default function FiltersControls({
         }))}
         onChange={onBrandsChange}
       />
-
-      <Select
-        mode="multiple"
-        allowClear
-        placeholder="Filter by tags"
-        style={{ width: 320 }}
-        value={selectedTags}
-        options={tags.map((tag) => ({
-          label: tag,
-          value: tag,
-        }))}
-        onChange={onTagsChange}
-      />
+      <Tooltip title="Tag filtering depends on data availability from the API">
+        <Select
+          mode="multiple"
+          allowClear
+          placeholder="Filter by tags"
+          style={{ width: 320 }}
+          value={selectedTags}
+          options={tags.map((tag) => ({
+            label: tag,
+            value: tag,
+          }))}
+          onChange={onTagsChange}
+        />
+      </Tooltip>
     </Space>
   );
 }

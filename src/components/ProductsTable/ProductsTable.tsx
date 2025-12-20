@@ -1,7 +1,9 @@
-import { Image, Table, Tag } from "antd";
+import { Image, Table, Tag, Tooltip } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import type { MakeupProduct } from "../../types/makeup";
 import ProductsRow from "./ProductRow";
+
+import { PlusSquareOutlined, MinusSquareOutlined } from "@ant-design/icons";
 
 type Props = {
   products: MakeupProduct[];
@@ -49,7 +51,7 @@ export default function ProductsTable({ products, loading }: Props) {
     },
   ];
 
-  return (
+  /*  return (
     <Table<MakeupProduct>
       rowKey="id"
       loading={loading}
@@ -58,6 +60,41 @@ export default function ProductsTable({ products, loading }: Props) {
       expandable={{
         rowExpandable: (record) => record.product_colors.length > 0,
         expandedRowRender: (record) => <ProductsRow product={record} />,
+      }}
+      pagination={{ pageSize: 10 }}
+    />
+  ); */
+  return (
+    <Table<MakeupProduct>
+      rowKey="id"
+      loading={loading}
+      columns={columns}
+      dataSource={products}
+      expandable={{
+        rowExpandable: (record) =>
+          Array.isArray(record.product_colors) &&
+          record.product_colors.length > 0,
+
+        expandedRowRender: (record) => <ProductsRow product={record} />,
+
+        expandIcon: ({ expanded, onExpand, record }) => {
+          const hasColors =
+            Array.isArray(record.product_colors) &&
+            record.product_colors.length > 0;
+
+          if (!hasColors) return null;
+
+          return (
+            <Tooltip title="Show product colors">
+              <span
+                onClick={(e) => onExpand(record, e)}
+                style={{ cursor: "pointer" }}
+              >
+                {expanded ? <MinusSquareOutlined /> : <PlusSquareOutlined />}
+              </span>
+            </Tooltip>
+          );
+        },
       }}
       pagination={{ pageSize: 10 }}
     />
