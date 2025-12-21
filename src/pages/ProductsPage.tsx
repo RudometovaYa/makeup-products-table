@@ -5,12 +5,15 @@ import { fetchProducts } from "../services/makeupApi";
 import ProductsTable from "../components/ProductsTable/ProductsTable";
 import FiltersControls from "../components/FiltersControls/FiltersControls";
 
-import type { MakeupProduct } from "../types/makeup";
+import type { MakeupProduct, GroupRow } from "../types/makeup";
 import { TAG_OPTIONS } from "../constants/tags";
+
+import { groupProducts } from "../utils/groupProducts";
 
 import { Layout } from "antd";
 
 const { Text } = Typography;
+const { Content } = Layout;
 
 export type GroupBy = "none" | "brand" | "category" | "type";
 
@@ -50,28 +53,38 @@ export default function ProductsPage() {
         : true
     );
 
-  const groupValues =
-    groupBy === "none"
-      ? []
-      : Array.from(
-          new Set(
-            filteredProducts.map((p) => {
-              if (groupBy === "brand") return p.brand;
-              if (groupBy === "category") return p.category;
-              return p.product_type;
-            })
-          )
-        );
+  const groupedRows: GroupRow[] =
+    groupBy === "none" ? [] : groupProducts(filteredProducts, groupBy);
 
   const brands = Array.from(new Set(allProducts.map((p) => p.brand))).filter(
     (brand): brand is string => Boolean(brand)
   );
   const tags = TAG_OPTIONS;
 
-  if (loading) return <Spin />;
-  if (error) return <Alert type="error" description={error} />;
+  if (loading) {
+    return (
+      <Layout>
+        <Content style={{ padding: 48, textAlign: "center" }}>
+          <Spin size="large" />
+        </Content>
+      </Layout>
+    );
+  }
+  if (error) {
+    return (
+      <Layout>
+        <Content style={{ maxWidth: 600, margin: "40px auto" }}>
+          <Alert type="error" message="Error" description={error} showIcon />
+        </Content>
+      </Layout>
+    );
+  }
 
-  const { Content } = Layout;
+  const resetFilters = () => {
+    setSelectedBrands([]);
+    setSelectedTags([]);
+    setGroupBy("none");
+  };
 
   return (
     <Layout>
@@ -93,7 +106,17 @@ export default function ProductsPage() {
             onBrandsChange={setSelectedBrands}
             onTagsChange={setSelectedTags}
             onGroupChange={setGroupBy}
+            onReset={resetFilters}
           />
+
+          {!loading && groupBy === "none" && filteredProducts.length === 0 && (
+            <Alert
+              type="info"
+              title="No products found"
+              description="Try changing or resetting filters"
+              showIcon
+            />
+          )}
 
           {groupBy === "none" && (
             <ProductsTable products={filteredProducts} loading={loading} />
@@ -102,21 +125,13 @@ export default function ProductsPage() {
           {groupBy !== "none" && (
             <Collapse
               accordion
-              items={groupValues.map((value) => {
-                const groupProducts = filteredProducts.filter((p) => {
-                  if (groupBy === "brand") return p.brand === value;
-                  if (groupBy === "category") return p.category === value;
-                  return p.product_type === value;
-                });
-
-                return {
-                  key: value,
-                  label: <Text strong>{value}</Text>,
-                  children: (
-                    <ProductsTable products={groupProducts} loading={loading} />
-                  ),
-                };
-              })}
+              items={groupedRows.map((group) => ({
+                key: group.key,
+                label: <Text strong>{group.title}</Text>,
+                children: (
+                  <ProductsTable products={group.children} loading={false} />
+                ),
+              }))}
             />
           )}
         </Space>

@@ -1,4 +1,4 @@
-import { Select, Switch, Space, Typography, Tooltip } from "antd";
+import { Select, Switch, Space, Typography, Tooltip, Button } from "antd";
 
 type GroupBy = "brand" | "category" | "type" | "none";
 
@@ -13,6 +13,7 @@ type Props = {
   onBrandsChange: (value: string[]) => void;
   onTagsChange: (value: string[]) => void;
   onGroupChange: (value: GroupBy) => void;
+  onReset: () => void;
 };
 
 const { Title, Text } = Typography;
@@ -26,6 +27,7 @@ export default function FiltersControls({
   onBrandsChange,
   onTagsChange,
   onGroupChange,
+  onReset,
 }: Props) {
   const handleGroupToggle = (value: Exclude<GroupBy, "none">) => {
     onGroupChange(groupBy === value ? "none" : value);
@@ -59,7 +61,7 @@ export default function FiltersControls({
         mode="multiple"
         allowClear
         placeholder="Filter by brands"
-        style={{ width: 320 }}
+        style={{ maxWidth: 320, width: "100%" }}
         value={selectedBrands}
         options={brands.map((brand) => ({
           label: brand,
@@ -72,7 +74,7 @@ export default function FiltersControls({
           mode="multiple"
           allowClear
           placeholder="Filter by tags"
-          style={{ width: 320 }}
+          style={{ maxWidth: 320, width: "100%" }}
           value={selectedTags}
           options={tags.map((tag) => ({
             label: tag,
@@ -81,6 +83,16 @@ export default function FiltersControls({
           onChange={onTagsChange}
         />
       </Tooltip>
+      <Button
+        onClick={onReset}
+        disabled={
+          selectedBrands.length === 0 &&
+          selectedTags.length === 0 &&
+          groupBy === "none"
+        }
+      >
+        Reset filters
+      </Button>
     </Space>
   );
 }

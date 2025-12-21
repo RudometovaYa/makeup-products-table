@@ -1,7 +1,7 @@
 # Makeup Products Table
 
-A React application for browsing and filtering cosmetic products using the public Makeup API.
-The project demonstrates data fetching, client-side filtering, grouping, and table-based UI built with Ant Design.
+A React application for browsing and filtering cosmetic products built as a test assignment.
+The project focuses on clean component architecture, client-side data handling, and Ant Design integration.
 
 ## Live Demo 🔗
 
@@ -10,39 +10,25 @@ https://makeup-products-table.vercel.app/
 
 ## Features ✨
 
-📦 Fetch products from public API
-
-📊 Display products in a table
-
-🔍 Filter products by brand (multiple selection)
-
-🏷️ Filter products by tags (multiple selection)
-
-🧩 Group products by:
-
-     - brand
-
-     - category
-
-     - product type
-
-➕ Expandable rows to show product colors
-
-⏳ Loading and error states
-
-🧼 Clean, structured component architecture
-
+📦 Fetch products from public API  
+📊 Display products in a table  
+🔍 Filter products by brand (multiple selection)  
+🏷️ Filter products by tags (multiple selection)  
+🧩 Group products by brand, category, or product type  
+➕ Expandable rows to display product colors  
+⏳ Loading and error states  
+🧼 Clean, structured component architecture  
 📱 Responsive and stable layout
 
 ## Tech Stack 🛠️
 
-- React
+- React (Hooks, Functional Components)
 
 - TypeScript
 
 - Vite
 
-- Ant Design
+- Ant Design (Table, Select, Collapse, etc.)
 
 - Makeup API
 
@@ -101,6 +87,7 @@ npm run dev
 
 ####
 
+The application will be available at:
 http://localhost:5173
 
 ## Notes 📌
@@ -126,6 +113,6 @@ All edge cases related to missing data are handled gracefully
 ✔️ Props-based data flow
 
 🧑‍💻 Author
-Yana Rudometova — Frontend Developer
+Yana Rudometova — Frontend Developer (Trainee / Junior)
 GitHub: https://github.com/RudometovaYa?tab=repositories
 LinkedIn: https://www.linkedin.com/in/yana-rudometova/

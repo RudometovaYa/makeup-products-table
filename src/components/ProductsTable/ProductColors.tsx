@@ -14,12 +14,12 @@ export default function ProductColors({ colors }: Props) {
 
   return (
     <Space wrap>
-      {colors.map((color) => (
+      {colors.map((color, index) => (
         <Tag
-          key={color.hex_value}
+          key={`${color.hex_value}-${index}`}
           style={{
             backgroundColor: color.hex_value,
-            color: "#fff",
+            color: "#000",
             border: "none",
           }}
         >

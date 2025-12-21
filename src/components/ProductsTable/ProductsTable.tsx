@@ -42,7 +42,7 @@ export default function ProductsTable({ products, loading }: Props) {
     {
       title: "Price",
       key: "price",
-      render: (_, record) => `$${record.price}`,
+      render: (_, record) => (record.price ? `$${record.price}` : "—"),
     },
     {
       title: "Product type",
@@ -50,20 +50,6 @@ export default function ProductsTable({ products, loading }: Props) {
       render: (_, record) => <Tag color="blue">{record.product_type}</Tag>,
     },
   ];
-
-  /*  return (
-    <Table<MakeupProduct>
-      rowKey="id"
-      loading={loading}
-      columns={columns}
-      dataSource={products}
-      expandable={{
-        rowExpandable: (record) => record.product_colors.length > 0,
-        expandedRowRender: (record) => <ProductsRow product={record} />,
-      }}
-      pagination={{ pageSize: 10 }}
-    />
-  ); */
   return (
     <Table<MakeupProduct>
       rowKey="id"
@@ -87,6 +73,8 @@ export default function ProductsTable({ products, loading }: Props) {
           return (
             <Tooltip title="Show product colors">
               <span
+                role="button"
+                aria-label="Toggle product colors"
                 onClick={(e) => onExpand(record, e)}
                 style={{ cursor: "pointer" }}
               >
